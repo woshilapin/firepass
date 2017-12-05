@@ -1,0 +1,9 @@
+{
+	"name": "firepass",
+	"description": "Example host for native messaging",
+	"path": "/usr/local/bin/firepass",
+	"type": "stdio",
+	"allowed_extensions": [
+		"firepass@tuziwo.info"
+	]
+}
