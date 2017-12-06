@@ -1,18 +1,16 @@
 import gulp from 'gulp';
 import gchmod from 'gulp-chmod';
-import gclean from 'gulp-clean';
 import grename from 'gulp-rename';
 import gsourcemaps from 'gulp-sourcemaps';
 import gwebpack from 'webpack-stream';
 
+import del from 'del';
 import webpack from 'webpack';
 
 import webpackConfig from './webpack.config.js';
 
 export function clean() {
-	return gulp.src('dist/')
-		.pipe(gclean({force: true}))
-		.pipe(gulp.dest('dist/'));
+	return del(['dist/']);
 }
 clean.description = 'Clean directory';
 
