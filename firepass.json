@@ -1,6 +1,6 @@
 {
 	"name": "firepass",
-	"description": "Example host for native messaging",
+	"description": "FirePass backend to interact with Firefox FirePass webextension",
 	"path": "/usr/local/bin/firepass",
 	"type": "stdio",
 	"allowed_extensions": [
