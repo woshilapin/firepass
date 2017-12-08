@@ -37,7 +37,7 @@ function installBinary() {
 	return gulp.src('dist/firepass.js')
 		.pipe(grename('firepass'))
 		.pipe(gchmod(0o755))
-		.pipe(ginsert.prepend('#!/usr/bin/env node\n'))
+		.pipe(ginsert.prepend('#!/usr/bin/env /usr/local/bin/node\n'))
 		.pipe(gulp.dest('/usr/local/bin/'));
 }
 function installManifest() {
