@@ -9,7 +9,7 @@ class PassEmitter extends EventEmitter {};
 const pass = new PassEmitter();
 
 pass.show = (path) => {
-	let thread = spawn('pass', path);
+	let thread = spawn('pass', ['show', path]);
 	let rl = readline.createInterface({
 		"input": thread.stdout,
 		"output": thread.stdin,
