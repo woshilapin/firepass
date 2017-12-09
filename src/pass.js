@@ -8,12 +8,21 @@ class PassEmitter extends EventEmitter {};
 
 const pass = new PassEmitter();
 
-pass.show = (path) => {
-	let thread = spawn('pass', ['show', path]);
-	let rl = readline.createInterface({
+function exec(args) {
+
+	let thread = spawn('pass', args);
+	return readline.createInterface({
 		"input": thread.stdout,
 		"output": thread.stdin,
 	});
+}
+
+pass.ls = () => {
+	let rl = exec(['ls']);
+}
+
+pass.show = (path) => {
+	let rl = exec(['show', path]);
 	let output = {};
 	rl.on('line', (line) => {
 		if(!output.password) {
