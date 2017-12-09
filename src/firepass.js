@@ -1,13 +1,8 @@
 import { spawn } from 'child_process';
 import readline from 'readline';
 
-function send(message) {
-	let messageToSend = Buffer.from(JSON.stringify(message), 'utf8');
-	let messageLength = Buffer.alloc(4, 0);
-	messageLength.writeInt32LE(Buffer.byteLength(messageToSend), 0);
-	process.stdout.write(messageLength);
-	process.stdout.write(messageToSend);
-}
+import protocol from './protocol.js';
+
 process.stdin.on('data', (buffer) => {
 	let messageReceivedLength = buffer.readInt32LE(0);
 	// TODO: Check that the size of the buffer is the size of the content that has to be read (if incomplete, JSON.parse will fail)
@@ -27,7 +22,7 @@ process.stdin.on('data', (buffer) => {
 		}
 	});
 	rl.on('pause', () => {
-		send(message);
+		protocol.send(message);
 		rl.close();
 		thread.kill();
 	});
