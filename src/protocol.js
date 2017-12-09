@@ -12,4 +12,11 @@ protocol.send = function send(message) {
 	process.stdout.write(messageToSend);
 }
 
+process.stdin.on('data', (buffer) => {
+	let messageLength = buffer.readInt32LE(0);
+	// TODO: Check that the size of the buffer is the size of the content that has to be read (if incomplete, JSON.parse will fail)
+	let message = JSON.parse(buffer.slice(4));
+	protocol.emit('message', message);
+});
+
 export default protocol;
