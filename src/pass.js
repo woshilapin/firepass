@@ -18,8 +18,10 @@ pass.exec = function exec(args) {
 	rl.on('line', (line) => {
 		if(!output.password) {
 			output.password = line;
-		} else if (line.startsWith('login:')) {
-			output.login = line.replace(/login: /, '');
+		} else if (/^\w(?:\w|-\w)*:/.test(line)) {
+			let index = line.indexOf(':');
+			let key = line.substring(0, index).trim();
+			output[key] = line.substring(index + 1).trim();
 		}
 	});
 	rl.on('pause', () => {
