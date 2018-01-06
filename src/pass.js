@@ -21,27 +21,81 @@ function exec(args) {
 pass.ls = () => {
 	let rl = exec(['ls']);
 	let current = [];
-	let pathlist = [];
-	let root = [];
-	let paths = {};
+	let paths = [];
 	rl.on('line', (line) => {
 		let level = Math.floor(line.search(/\w/) / 4) - 1;
 		let name = line.match(/\w(?:\w|-\w)*$/)[0];
 		if(level < 0) {
 			return;
 		}
-		if(level >= current.length) {
-			current[level] = name;
-		} else {
+		if(level < current.length) {
 			current = current.slice(0, level);
-			current[level] = name;
 		}
-		let path = current.join('.');
-		let existing = Object.assign({}, _.get(paths, path));
-		_.set(paths, path, existing);
+		current[level] = name;
+		paths.push(Array.from(current));
 	});
 	rl.on('pause', () => {
-		pass.emit('end', paths);
+		let insertPath = (logins, path) => {
+			if(path.length < 1) {
+				return;
+			}
+			let name = path[0];
+			if(path.length === 1) { // It is file
+				logins.push({
+					"type": 'file',
+					name,
+				});
+			} else { // It is a folder
+				let find = logins.find((f) => f.name === name);
+				if(find !== undefined && find.type === 'file') { // Transform the find into a folder
+					find.type = 'folder';
+					find.files = [];
+				} else if(find === undefined) {
+					find = {
+						"type": 'folder',
+						name,
+						files: [],
+					}
+				}
+				insertPath(find.files, path.slice(1));
+			}
+		}
+		let logins = [];
+		for(let path of paths) {
+			insertPath(logins, path);
+		}
+		/*
+		for(let path of paths) {
+			let current = logins;
+			for(let [i, folder] of path.entries()) {
+				let isFile = (i === path.length - 1);
+				if(isFile) {
+					current.push({
+						"type": 'file',
+						"name": folder,
+					});
+				} else {
+					let find = current.find((f) => f.name === folder);
+					if(find !== undefined) {
+						if(find.type === 'file') {
+							find.type = 'folder';
+							find.files = [];
+						}
+						current = find.files;
+					} else {
+						let newFolder = {
+							"type": 'folder',
+							"name": folder,
+							"files": [],
+						};
+						current.push(newFolder);
+						current = newFolder.files;
+					}
+				}
+			}
+		}
+		*/
+		pass.emit('end', logins);
 		rl.close();
 		thread.kill();
 	});
