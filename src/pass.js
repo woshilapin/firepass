@@ -24,7 +24,7 @@ pass.ls = () => {
 	let paths = [];
 	rl.on('line', (line) => {
 		let level = Math.floor(line.search(/\w/) / 4) - 1;
-		let name = line.match(/\w(?:\w|-\w)*$/)[0];
+		let name = line.match(/\w(?:\w|[_.-]\w)*$/)[0];
 		if(level < 0) {
 			return;
 		}
@@ -64,37 +64,6 @@ pass.ls = () => {
 		for(let path of paths) {
 			insertPath(logins, path);
 		}
-		/*
-		for(let path of paths) {
-			let current = logins;
-			for(let [i, folder] of path.entries()) {
-				let isFile = (i === path.length - 1);
-				if(isFile) {
-					current.push({
-						"type": 'file',
-						"name": folder,
-					});
-				} else {
-					let find = current.find((f) => f.name === folder);
-					if(find !== undefined) {
-						if(find.type === 'file') {
-							find.type = 'folder';
-							find.files = [];
-						}
-						current = find.files;
-					} else {
-						let newFolder = {
-							"type": 'folder',
-							"name": folder,
-							"files": [],
-						};
-						current.push(newFolder);
-						current = newFolder.files;
-					}
-				}
-			}
-		}
-		*/
 		pass.emit('end', logins);
 		rl.close();
 		thread.kill();
